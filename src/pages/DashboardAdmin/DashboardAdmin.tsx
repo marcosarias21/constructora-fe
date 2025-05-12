@@ -1,3 +1,4 @@
+import React from 'react'
 import { CardTask } from '@/components/CardTask'
 import { ModalAdminTask } from '@/components/ModalAdminTask'
 import { Sidebar } from '@/components/Siderbar'
@@ -29,6 +30,7 @@ const DashboardAdmin = () => {
     getTasks()
     if (user?.role != 'Admin') navigate('/dashboard')
   }, [])
+  console.log(user)
 
   return (
     <div className="grid grid-cols-1 bg-[#1a1a1a] px-4 py-2 text-gray-200 lg:grid-cols-12">
@@ -39,10 +41,11 @@ const DashboardAdmin = () => {
       <main className="rounded-2xl border border-white/10 bg-[#212121] p-6 shadow-lg lg:col-span-10">
         <header className="mb-6">
           <h2 className="mb-2 text-3xl font-bold tracking-tight text-white">
-            Admin Dashboard
+            Panel de Administrador
           </h2>
           <p className="text-sm text-gray-400">
-            Manage your tasks efficiently and with style.
+            Bienvenido {user?.firstName}, aqui podras administrar las tareas de
+            los trabajadores.
           </p>
         </header>
 
