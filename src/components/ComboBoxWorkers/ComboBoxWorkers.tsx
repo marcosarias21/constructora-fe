@@ -37,7 +37,7 @@ const ComboBoxWorkers = () => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[200px] justify-between bg-zinc-800"
         >
           {selectedWorkers.length > 0
             ? `${selectedWorkers[currentIndex]?.firstName} ${selectedWorkers[currentIndex]?.lastName}`
