@@ -19,109 +19,108 @@ const ModalAdminTask = () => {
   const { register, handleSubmit } = useForm()
   const { selectedWorkers } = useDataStore()
   const [assignessArray, setAssignessArray] = useState(Array(1).fill(null))
-  const addWorker = () => {
-    setAssignessArray([...assignessArray, null])
-  }
+
+  const addWorker = () => setAssignessArray([...assignessArray, null])
   const deleteWorker = () => {
     if (assignessArray.length > 1) {
       setAssignessArray(assignessArray.slice(0, -1))
     } else {
-      alert('Se requiere un trabajador como minimo')
+      alert('Se requiere al menos un trabajador')
     }
   }
 
-  const onSubmit = async (e: any) => {
-    const taskPostResp = await axios.post(
+  interface TaskFormData {
+    description: string
+    location: string
+    estimatedTime: number
+  }
+
+  const onSubmit = async (data: TaskFormData) => {
+    const response = await axios.post(
       'http://localhost:8000/task/createTask',
-      { ...e, assignees: selectedWorkers },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
+      { ...data, assignees: selectedWorkers },
+      { headers: { 'Content-Type': 'application/json' } },
     )
-    console.log(taskPostResp)
-    if (taskPostResp.data.message) {
-      alert(`${taskPostResp.data.message}`)
-    }
+    if (response.data.message) alert(response.data.message)
   }
 
   return (
     <Dialog>
       <DialogTrigger>
-        <span>+ Create task (Sale modal)</span>
+        <Button className="rounded-md bg-yellow-400 px-4 py-2 text-white shadow hover:bg-yellow-300">
+          Crear tarea
+        </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="rounded-lg bg-zinc-900 text-white shadow-xl">
         <DialogHeader>
-          <DialogTitle>Create Task</DialogTitle>
-          <DialogDescription>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="mt-2 flex flex-col gap-2">
-                <Label>Descripcion</Label>
-                <Input
-                  type="text"
-                  placeholder="Arreglar aire acondicionado..."
-                  {...register('description')}
-                />
-              </div>
-              <div className="flex w-full gap-2">
-                <div className="flex w-full flex-col gap-1">
-                  <Label>Direccion</Label>
-                  <Input
-                    type="text"
-                    placeholder="Rivadavia 1200..."
-                    {...register('location')}
-                  />
-                </div>
-                <div className="flex w-full flex-col gap-1">
-                  <Label>Tiempo:</Label>
-                  <Input
-                    type="number"
-                    placeholder="2 horas"
-                    {...register('estimatedTime')}
-                  />
-                </div>
-              </div>
-              <div className="flex w-full flex-col gap-1">
-                <div className="flex gap-2">
-                  <Label>Asigna trabajadores:</Label>
-                  <div className="flex gap-1">
-                    <Button
-                      type="button"
-                      className="w-fit border-1 bg-white text-blue-400 hover:bg-inherit"
-                      onClick={addWorker}
-                    >
-                      +
-                    </Button>
-                    <Button
-                      type="button"
-                      className="border-1 bg-white text-red-400 hover:bg-inherit"
-                      onClick={deleteWorker}
-                    >
-                      -
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex w-full flex-wrap gap-2">
-                  {assignessArray.map((_) => (
-                    <ComboBoxWorkers />
-                  ))}
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-400"
-                >
-                  Create Task
-                </Button>
-              </div>
-            </form>
+          <DialogTitle className="text-2xl font-semibold">
+            Crear Nueva Tarea
+          </DialogTitle>
+          <DialogDescription className="text-sm text-zinc-400">
+            Completa los campos para asignar una nueva tarea.
           </DialogDescription>
         </DialogHeader>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
+          <div>
+            <Label>Descripción</Label>
+            <Input
+              type="text"
+              placeholder="Arreglar aire acondicionado..."
+              className="border border-zinc-700 bg-zinc-800 text-white"
+              {...register('description')}
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <Label>Dirección</Label>
+              <Input
+                type="text"
+                placeholder="Rivadavia 1200..."
+                className="border border-zinc-700 bg-zinc-800 text-white"
+                {...register('location')}
+              />
+            </div>
+            <div className="flex-1">
+              <Label>Tiempo estimado (horas)</Label>
+              <Input
+                type="number"
+                placeholder="2"
+                className="border border-zinc-700 bg-zinc-800 text-white"
+                {...register('estimatedTime')}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <Label>Asignar trabajadores</Label>
+              <div className="space-x-2">
+                <Button type="button" onClick={addWorker} className="px-2">
+                  +
+                </Button>
+                <Button type="button" onClick={deleteWorker} className="px-2">
+                  -
+                </Button>
+              </div>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {assignessArray.map((_, idx) => (
+                <ComboBoxWorkers key={idx} />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="rounded-md bg-yellow-400 px-4 py-2 text-white hover:bg-yellow-300"
+            >
+              Crear tarea
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   )
