@@ -32,9 +32,10 @@ const Sidebar = () => {
           </span>
         </div>
         <div className="flex flex-col gap-1 text-lg tracking-wide">
-          <div className="flex gap-1 font-medium">
-            <h4>{user?.firstName}</h4>
-            <h4>{user?.lastName}</h4>
+          <div className="flex max-w-[120px] gap-1 font-medium break-words">
+            <h4 className="break-words">
+              {user?.firstName} {user?.lastName}
+            </h4>
           </div>
           <div className="text-sm">
             <p>Rol: {user?.role}</p>

@@ -2,6 +2,7 @@ import { CardTask } from '@/components/CardTask'
 import ModalAdminDetailTask from '@/components/ModalAdminDetailTask/ModalAdminDetailTask'
 import { ModalAdminTask } from '@/components/ModalAdminTask'
 import { Sidebar } from '@/components/Siderbar'
+import MobileSidebar from '@/components/Siderbar/MobileSidebar'
 import { useAuthStore } from '@/store/authStore'
 import { useDataStore } from '@/store/dataStore'
 import { Task } from '@/types'
@@ -22,7 +23,7 @@ const DashboardAdmin = () => {
   }
 
   const getTasks = async () => {
-    const tasksResp = await await axios.get('http://localhost:8000/task')
+    const tasksResp = await axios.get('http://localhost:8000/task')
     setAllTasksData(tasksResp.data.allTasks)
   }
 
@@ -33,40 +34,55 @@ const DashboardAdmin = () => {
   }, [])
 
   return (
-    <div className="grid grid-cols-1 bg-[#1a1a1a] px-4 py-2 text-gray-200 lg:grid-cols-12">
-      <aside className="mb-4 h-[calc(100vh-2rem)] rounded-2xl border border-white/10 bg-[#212121] p-4 shadow-lg lg:col-span-2 lg:mr-4 lg:mb-0">
-        <Sidebar />
-      </aside>
+    <div className="min-h-screen bg-[#1a1a1a] text-gray-200">
+      <div className="flex">
+        <aside className="hidden h-screen w-64 flex-shrink-0 border-r border-white/10 bg-[#212121] p-4 lg:block">
+          <Sidebar />
+        </aside>
 
-      <main className="rounded-2xl border border-white/10 bg-[#212121] p-6 shadow-lg lg:col-span-10">
-        <header className="mb-6">
-          <h2 className="mb-2 text-3xl font-bold tracking-tight text-white">
-            Panel
-          </h2>
-          <p className="text-sm text-gray-400">
-            Aquí podrás gestionar y crear tareas.
-          </p>
-        </header>
-        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-white/10 bg-gray-800 p-4 transition-shadow hover:bg-gray-700 hover:shadow-xl">
-            <ModalAdminTask />
+        <main className="flex-1 p-4 lg:p-6">
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white">Panel</h1>
+                <p className="text-sm text-gray-400">
+                  Administrador Principal • Rol: {user?.role}
+                </p>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-gray-400">
+              Aquí podrás gestionar y crear tareas.
+            </p>
+            <div className="lg:hidden">
+              <MobileSidebar />
+            </div>
           </div>
-          {allTasksData.map((task, i) => (
-            <CardTask
-              key={i}
-              index={i}
-              {...task}
-              onClick={() => setSelectedTask(task)}
+
+          <div className="space-y-6">
+            <div className="rounded-xl border border-white/10 bg-gray-800 p-4 transition-shadow hover:bg-gray-700 hover:shadow-xl">
+              <ModalAdminTask />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {allTasksData.map((task, i) => (
+                <CardTask
+                  key={i}
+                  index={i}
+                  {...task}
+                  onClick={() => setSelectedTask(task)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {selectedTask && (
+            <ModalAdminDetailTask
+              task={selectedTask}
+              onClose={() => setSelectedTask(null)}
             />
-          ))}
-        </section>{' '}
-        {selectedTask && (
-          <ModalAdminDetailTask
-            task={selectedTask}
-            onClose={() => setSelectedTask(null)}
-          />
-        )}
-      </main>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
