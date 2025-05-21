@@ -1,6 +1,6 @@
 import { Task } from '@/types'
 import { Button } from '../ui/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ComboBoxWorkers } from '../ComboBoxWorkers'
 import axios from 'axios'
@@ -15,9 +15,12 @@ type Props = {
 const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const { workersList } = useDataStore()
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: { description: task.description, location: task.location },
+  })
 
   const handleEdit = async (e: any) => {
+    console.log(e)
     const hasChanged =
       e.description !== task.description || e.location !== task.location
 
@@ -31,10 +34,19 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
       { ...e, assignees: workersList },
       { headers: { 'Content-Type': 'application/json' } },
     )
+    console.log(taskEditResp.data)
     if (taskEditResp.status === 200) {
       toast.success('Tarea editada con exito!')
       setIsEdit(false)
     }
+  }
+
+  const handleClose = () => {
+    reset({
+      description: task.description,
+      location: task.location,
+    })
+    setIsEdit(false)
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -62,7 +74,6 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
             <h4 className="text-sm">Descripcion</h4>
             <input
               className="w-full text-sm"
-              value={isEdit ? undefined : task.description}
               {...register('description')}
               readOnly={!isEdit}
             />
@@ -71,7 +82,6 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
             <h4 className="text-sm">Ubicación</h4>
             <input
               className="w-full text-sm"
-              value={isEdit ? undefined : task.location}
               {...register('location')}
               readOnly={!isEdit}
             />
@@ -136,7 +146,7 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => setIsEdit(false)}
+                  onClick={handleClose}
                   className="bg-red-500"
                 >
                   Cancelar Cambios
