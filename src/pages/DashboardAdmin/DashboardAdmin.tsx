@@ -60,7 +60,7 @@ const DashboardAdmin = () => {
 
           <div className="space-y-6">
             <div className="rounded-xl border border-white/10 bg-gray-800 p-4 transition-shadow hover:bg-gray-700 hover:shadow-xl">
-              <ModalAdminTask />
+              <ModalAdminTask getTasks={getTasks} />
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -79,6 +79,7 @@ const DashboardAdmin = () => {
             <ModalAdminDetailTask
               task={selectedTask}
               onClose={() => setSelectedTask(null)}
+              setSelectedTask={setSelectedTask}
             />
           )}
         </main>

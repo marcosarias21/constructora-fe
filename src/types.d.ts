@@ -21,7 +21,7 @@ interface NoteContent {
 export interface Task {
   _id: string
   station: string
-  incidencia?: number
+  incidence?: number
   description: string
   location: string
   estimatedTime: number

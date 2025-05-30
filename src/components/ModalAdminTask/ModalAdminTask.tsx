@@ -18,17 +18,15 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { stations } from '@/helpers/stationArray'
+import { taskSchema } from '@/schemas/formSchema'
 
-const taskSchema = z.object({
-  station: z.string().optional(),
-  incidencia: z.string().optional(),
-  description: z.string().min(1, 'La descripción es obligatoria'),
-  location: z.string().min(1, 'La dirección es obligatoria'),
-  estimatedTime: z.string().min(1, 'Tiempo estimado requerido'),
-})
 type TaskFormData = z.infer<typeof taskSchema>
 
-const ModalAdminTask = () => {
+type Prop = {
+  getTasks: () => void
+}
+
+const ModalAdminTask: React.FC<Prop> = ({ getTasks }) => {
   const { register, handleSubmit, reset } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     mode: 'onChange',
@@ -61,6 +59,7 @@ const ModalAdminTask = () => {
       })
 
       toast.success('¡Tarea creada con éxito!')
+      getTasks()
       reset()
       setAssignessArray([null])
       setIsOpen(false)
@@ -110,7 +109,7 @@ const ModalAdminTask = () => {
                   type="number"
                   placeholder="400090000..."
                   className="border border-white/10 bg-[#1e1e1e] text-white"
-                  {...register('incidencia')}
+                  {...register('incidence')}
                 />
               </div>
               <div className="flex flex-col gap-2">

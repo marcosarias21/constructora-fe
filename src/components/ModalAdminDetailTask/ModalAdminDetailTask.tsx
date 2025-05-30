@@ -1,6 +1,6 @@
 import { Task } from '@/types'
 import { Button } from '../ui/button'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ComboBoxWorkers } from '../ComboBoxWorkers'
 import axios from 'axios'
@@ -10,9 +10,15 @@ import { toast } from 'sonner'
 type Props = {
   task: Task
   onClose: () => void
+  setSelectedTask: (arg: Task) => void
 }
 
-const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
+const ModalAdminDetailTask: React.FC<Props> = ({
+  task,
+  onClose,
+  setSelectedTask,
+}) => {
+  console.log(task)
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const { workersList } = useDataStore()
   const { register, handleSubmit, reset } = useForm({
@@ -20,7 +26,6 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
   })
 
   const handleEdit = async (e: any) => {
-    console.log(e)
     const hasChanged =
       e.description !== task.description || e.location !== task.location
 
@@ -38,6 +43,7 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
     if (taskEditResp.status === 200) {
       toast.success('Tarea editada con exito!')
       setIsEdit(false)
+      setSelectedTask(taskEditResp.data.task)
     }
   }
 
@@ -109,9 +115,9 @@ const ModalAdminDetailTask: React.FC<Props> = ({ task, onClose }) => {
                 ))
               ) : (
                 <div className="flex w-fit flex-col gap-2">
-                  {task.assignees.map((user) => (
+                  {task.assignees?.map((user) => (
                     <Button disabled>
-                      {user.firstName} {user.lastName}
+                      {user?.firstName} {user.lastName}
                     </Button>
                   ))}
                 </div>

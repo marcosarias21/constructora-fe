@@ -26,10 +26,8 @@ const ComboBoxWorkers: React.FC<Prop> = ({ _id, i }) => {
     setSelectedWorkers,
     selectedWorkers,
     setWorkersList,
-    workersList,
     replaceWorkerAtIndex,
   } = useDataStore()
-  console.log(workersList)
   const [open, setOpen] = useState(false)
   const [selectAssigneed, setSelectAssigneed] = useState<User>()
   const selectedWorker = workers?.find((w) => w._id == _id)
@@ -38,15 +36,10 @@ const ComboBoxWorkers: React.FC<Prop> = ({ _id, i }) => {
   const toggleWorkers = (index: number, worker: User) => {
     setSelectAssigneed(worker)
     replaceWorkerAtIndex(i, worker)
-    const existWorker = selectedWorkers.some((w) => w._id === worker._id)
-    if (existWorker) {
-      alert('Ya asignaste este trabajador')
-    } else {
-      const updated = [...selectedWorkers]
-      updated[index] = worker
-      setSelectedWorkers(updated)
-      setCurrentIndex(index)
-    }
+    const updated = [...selectedWorkers]
+    updated[index] = worker
+    setSelectedWorkers(updated)
+    setCurrentIndex(index)
   }
 
   useEffect(() => {
